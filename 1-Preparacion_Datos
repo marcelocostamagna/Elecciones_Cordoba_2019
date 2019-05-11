@@ -6,14 +6,12 @@ library(readr)
 resultados_test <- read_csv("Data/resultados-test.csv")
 
 #Transformar a formato long
-tabla_1 <-  resultados_test %>% 
-  #Quitar columnas de totales
-  select(-`TOTAL VOTOS AGRUPACIONES POLITICA` , -`TOTAL DE VOTOS ESCRUTADOS` ) 
-
-tabla_final  <- tabla_1 %>% 
-  #Pasar a formato long  las votaciones
-  gather(names(tabla_1[7:ncol(tabla_1)]), key = "partido", value = "votos") %>% 
-  # Crear columna boolean  BNR (blanco, nulos y recurridos) para diferecniar de los votos a agrupaciones politicas
+tabla_final <- resultados_test %>% 
+  #Pasar a formato long las votaciones por partido incluidas en blanco , nulos y recurridos (BNR).
+  gather(names(select(resultados_test, -(seccion:mesa) )), key = "partido", value = "votos") %>% 
+  #Quitar filas con totales.
+  filter(!str_detect(partido,"TOTAL") ) %>% 
+  # Crear columna boolean para diferenciar los BNR (blanco, nulos y recurridos) de los votos a agrupaciones politicas.
   mutate(BNR = if_else(str_detect(partido,"VOTOS"), 1, 0)) 
 
 #Guardar como CSV
