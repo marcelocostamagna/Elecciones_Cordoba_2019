@@ -13,3 +13,6 @@ tabla_final <-  resultados_test %>%
   gather(names(tabla_votacion[7:ncol(tabla_votacion)]), key = "partido", value = "votos") %>% 
   # Crear columna boolean  BNR (blanco, nulos y recurridos) para diferecniar de los votos a agrupaciones politicas
   mutate(BNR = if_else(str_detect(partido,"VOTOS"), 1, 0)) 
+
+#Guardar como CSV
+write_csv(tabla_final, "Data/tabla_final.csv")
