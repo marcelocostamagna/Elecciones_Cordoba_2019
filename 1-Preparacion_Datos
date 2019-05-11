@@ -1,0 +1,15 @@
+
+library(tidyverse)
+library(readr)
+
+#Cargar CVS
+resultados_test <- read_csv("Data/resultados-test.csv")
+
+#Transformar a formato long
+tabla_final <-  resultados_test %>% 
+  #Quitar columnas de totales
+  select(-`TOTAL VOTOS AGRUPACIONES POLITICA` , -`TOTAL DE VOTOS ESCRUTADOS` ) %>%  
+  #Pasar a formato long  las votaciones
+  gather(names(tabla_votacion[7:ncol(tabla_votacion)]), key = "partido", value = "votos") %>% 
+  # Crear columna boolean  BNR (blanco, nulos y recurridos) para diferecniar de los votos a agrupaciones politicas
+  mutate(BNR = if_else(str_detect(partido,"VOTOS"), 1, 0)) 
